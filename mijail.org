@@ -1,0 +1,254 @@
+#+TITLE: My emacs configuration
+#+AUTHOR: Mijail Aron Alvarez Cerrillo
+#+EMAIL: mijail.iso@ciencias.unam.mx
+* About
+  This is a basic setup for emacs.
+  #+BEGIN_SRC emacs-lisp
+  (setq user-full-name "Mijail Alvarez")
+  (setq user-mail-address "mijail.iso@ciencias.unam.mx")
+  #+END_SRC
+* Configurations
+** Packages
+   Setting up
+   #+BEGIN_SRC emacs-lisp
+     (require 'package)
+     (package-initialize)
+   #+END_SRC
+
+   Package Archives
+   #+BEGIN_SRC emacs-lisp
+     (setq package-archives '(("melpa" . "http://melpa.milkbox.net/packages/")
+                              ("org" . "http://orgmode.org/elpa/")
+                              ("gnu" . "http://elpa.gnu.org/packages/")
+                              ("marmalade" . "http://marmalade-repo.org/packages/")))
+   #+END_SRC
+
+   Packages to install
+   #+BEGIN_SRC emacs-lisp
+          (setq my-package-list '(rainbow-delimiters
+                                  flymake
+                                  auto-complete
+                                  autopair
+                                  yasnippet
+                                  flycheck
+                                  python-mode
+                                  jedi
+                                  flymake-python-pyflakes
+                                  elpy
+                                  smart-mode-line
+                                  dracula-theme
+                                  column-enforce-mode
+                                  helm
+                                  jdee
+                                  pdf-tools
+                                  haskell-mode
+                                  ))
+   #+END_SRC
+
+
+   Fetch the list of packages available
+   #+BEGIN_SRC emacs-lisp
+     (unless package-archive-contents
+       (package-refresh-contents))
+   #+END_SRC
+
+   Install packages
+   #+BEGIN_SRC emacs-lisp
+     (dolist (i-package my-package-list)
+       (unless (package-installed-p i-package)
+         (package-install i-package)))
+   #+END_SRC
+** Look and feel
+*** UI
+   UI - Emacs looks cool
+   Restore previous session(windows and buffers)
+   #+BEGIN_SRC emacs-lisp
+     (desktop-save-mode 1)
+   #+END_SRC
+
+   Full screen without bars and menu.
+   #+BEGIN_SRC emacs-lisp
+     (tool-bar-mode -1)
+     (menu-bar-mode -1)
+     (scroll-bar-mode -1)
+     (defun fullscreen ()
+       (interactive)
+       (x-send-client-message nil 0 nil "_NET_WM_STATE" 32
+                              '(2 "_NET_WM_STATE_FULLSCREEN" 0)))
+     (fullscreen)
+   #+END_SRC
+
+   Show time
+   #+BEGIN_SRC emacs-lisp
+     (display-time-mode)
+   #+END_SRC
+
+   SML
+   #+BEGIN_SRC emacs-lisp
+     (setq sml/no-confirm-load-theme t)
+     (setq sml/theme 'dark)
+     (sml/setup)
+   #+END_SRC
+
+   Navigation(windmove); =shift= + arrows to change window
+   #+BEGIN_SRC emacs-lisp
+     (windmove-default-keybindings)
+   #+END_SRC
+
+   Theme Dracula
+   #+BEGIN_SRC emacs-lisp
+     (add-to-list 'custom-theme-load-path "~/.emacs.d/elpa/dracula-theme-20160826.627")
+     (load-theme 'dracula t)
+   #+END_SRC
+
+   Show column number
+   #+BEGIN_SRC emacs-lisp
+     (setq column-number-mode t)
+   #+END_SRC
+
+   Keep the syntax highlighting in the current line.
+   #+BEGIN_SRC emacs-lisp
+     (set-face-foreground 'highlight nil)
+   #+END_SRC
+
+   Highlight current line
+   #+BEGIN_SRC emacs-lisp
+     (global-hl-line-mode 1)
+     (set-face-background 'hl-line "#383838")
+   #+END_SRC
+
+   Each successive level is highlighted in a different color.
+   #+BEGIN_SRC emacs-lisp
+     (require 'rainbow-delimiters)
+     (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
+   #+END_SRC
+
+   Allow to see matching pairs of parentheses and other characters.
+   #+BEGIN_SRC emacs-lisp
+     (show-paren-mode 1)
+   #+END_SRC
+
+   Highlight text that extends beyond a certain column.
+   #+BEGIN_SRC emacs-lisp
+     (require 'column-enforce-mode)
+     (global-column-enforce-mode t)
+   #+END_SRC
+
+   Make windmove work in org-mode
+   #+BEGIN_SRC emacs-lisp
+     (add-hook 'org-shiftup-final-hook 'windmove-up)
+     (add-hook 'org-shiftleft-final-hook 'windmove-left)
+     (add-hook 'org-shiftdown-final-hook 'windmove-down)
+     (add-hook 'org-shiftright-final-hook 'windmove-right)
+   #+END_SRC
+
+   Change "yes or no" to "y or n"
+   #+BEGIN_SRC emacs-lisp
+     (fset 'yes-or-no-p 'y-or-n-p)
+   #+END_SRC
+*** Helm
+    Helm configuration
+    #+BEGIN_SRC emacs-lisp
+      (require 'helm)
+      (global-set-key (kbd "M-x") 'helm-M-x)
+      (global-set-key (kbd "C-x C-f") 'helm-find-files)
+      (setq helm-M-x-fuzzy-match t) ;; optional fuzzy matching for helm-M-x
+      (global-set-key (kbd "M-y") 'helm-show-kill-ring)
+      (global-set-key (kbd "C-x C-b") 'helm-mini)
+      (global-set-key (kbd "M-l") 'helm-mini)
+      (setq helm-buffers-fuzzy-matching t
+            helm-recentf-fuzzy-match    t)
+      (global-set-key (kbd "C-c h o") 'helm-occur)
+      (global-set-key (kbd "C-h a") 'helm-apropos)
+      (setq helm-apropos-fuzzy-match t)
+      (setq helm-semantic-fuzzy-match t
+            helm-imenu-fuzzy-match    t)
+      (helm-autoresize-mode t)
+      (helm-mode 1)
+    #+END_SRC
+
+** Programming modes
+*** Java
+    Add jdee to auto complete
+    #+BEGIN_SRC emacs-lisp
+                                              ; (push 'jdee-mode ac-modes)
+    #+END_SRC   
+*** Haskell
+*** Python
+    Flymake
+    #+BEGIN_SRC emacs-lisp
+      (require 'flymake-python-pyflakes)
+      (add-hook 'python-mode-hook 'flymake-python-pyflakes-load)
+    #+END_SRC
+    
+    Elpy mode
+    #+BEGIN_SRC emacs-lisp
+      (elpy-enable)
+      (setenv "PYTHONPATH" "/usr/bin/python")
+      (add-hook 'python-mode-hook 'jedi:setup)
+      (setq jedi:complete-on-dot t)
+    #+END_SRC
+** Editing
+   Auto complete
+   #+BEGIN_SRC emacs-lisp
+     (require 'auto-complete)
+     (require 'auto-complete-config)
+     (ac-config-default)
+   #+END_SRC
+   
+   Add org-mode to AC
+   #+BEGIN_SRC emacs-lisp
+     (add-to-list 'ac-modes 'org-mode)
+   #+END_SRC   
+   
+   Autopair
+   #+BEGIN_SRC emacs-lisp
+     (require 'autopair)
+     (autopair-global-mode t)
+   #+END_SRC 
+   
+   Yasnippet
+   #+BEGIN_SRC emacs-lisp
+     (require 'yasnippet)
+     (yas-global-mode 1)
+     (add-hook 'term-mode-hook (lambda()
+                                 (yas-minor-mode -1)))
+   #+END_SRC
+   
+   Flycheck globally
+   #+BEGIN_SRC emacs-lisp
+     (require 'flycheck)
+     (add-hook 'after-init-hook #'global-flycheck-mode)
+   #+END_SRC
+** Tools
+   PDF Tools is, among other things, a replacement of DocView for PDF files.
+   #+BEGIN_SRC emacs-lisp
+     (pdf-tools-install)
+   #+END_SRC
+   
+   Org-mode
+   #+BEGIN_SRC emacs-lisp
+     (require 'org)
+   #+END_SRC
+
+   Evaluate src code without confirmation.
+   #+BEGIN_SRC emacs-lisp
+     (setq org-confirm-babel-evaluate nil)
+   #+END_SRC
+
+   Org-bullets
+   #+BEGIN_SRC emancs-lisp
+     (require 'org-bullets)
+     (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+   #+END_SRC
+
+   Active Babel languages
+   #+BEGIN_SRC emacs-lisp
+     (org-babel-do-load-languages
+      'org-babel-load-languages
+      '((python . t)
+        (java . t)
+        (haskell . t)
+        ))
+   #+END_SRC
+
