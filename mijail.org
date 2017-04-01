@@ -25,24 +25,25 @@
 
    Packages to install
    #+BEGIN_SRC emacs-lisp
-          (setq my-package-list '(rainbow-delimiters
-                                  flymake
-                                  auto-complete
-                                  autopair
-                                  yasnippet
-                                  flycheck
-                                  python-mode
-                                  jedi
-                                  flymake-python-pyflakes
-                                  elpy
-                                  smart-mode-line
-                                  dracula-theme
-                                  column-enforce-mode
-                                  helm
-                                  jdee
-                                  pdf-tools
-                                  haskell-mode
-                                  ))
+     (setq my-package-list '(rainbow-delimiters
+                             flymake
+                             auto-complete
+                             autopair
+                             yasnippet
+                             flycheck
+                             python-mode
+                             jedi
+                             flymake-python-pyflakes
+                             elpy
+                             smart-mode-line
+                             dracula-theme
+                             column-enforce-mode
+                             helm
+                             jdee
+                             pdf-tools
+                             haskell-mode
+                             magit
+                             ))
    #+END_SRC
 
 
@@ -252,3 +253,8 @@
         ))
    #+END_SRC
 
+   Magit
+   #+BEGIN_SRC emacs-lisp
+     (global-set-key (kbd "C-x g") 'magit-status)
+     (global-set-key (kbd "C-x M-g") 'magit-dispatch-popup)
+   #+END_SRC
