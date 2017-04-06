@@ -43,6 +43,8 @@
                              pdf-tools
                              haskell-mode
                              magit
+                             racket-mode
+                             prolog
                              ))
    #+END_SRC
 
