@@ -172,10 +172,11 @@
 
 ** Programming modes
 *** Java
-    [[https://github.com/jdee-emacs/jdee-server][[[JDEE Java backend]]]]
+    [[https://github.com/jdee-emacs/jdee-server][JDEE JAVA BACK END]]
     #+BEGIN_SRC emacs-lisp
       (setq jdee-server-dir "~/.emacs.d/myJars/")
     #+END_SRC
+
     Add jdee to auto complete
     #+BEGIN_SRC emacs-lisp
                                               ;(push 'jdee-mode ac-modes)
