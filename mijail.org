@@ -45,6 +45,7 @@
                              magit
                              racket-mode
                              prolog
+                             helm-spotify-plus
                              ))
    #+END_SRC
 
