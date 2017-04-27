@@ -266,3 +266,28 @@
      (global-set-key (kbd "C-x g") 'magit-status)
      (global-set-key (kbd "C-x M-g") 'magit-dispatch-popup)
    #+END_SRC
+
+   [[http://oremacs.com/2015/01/01/three-ansi-term-tips/][Term]]
+   #+BEGIN_SRC emacs-lisp
+     (setq explicit-shell-file-name "/usr/bin/zsh")
+   #+END_SRC
+
+   #+BEGIN_SRC emacs-lisp
+     (defun oleh-term-exec-hook ()
+       (let* ((buff (current-buffer))
+              (proc (get-buffer-process buff)))
+         (set-process-sentinel
+          proc
+          `(lambda (process event)
+             (if (string= event "finished\n")
+                 (kill-buffer ,buff))))))
+
+     (add-hook 'term-exec-hook 'oleh-term-exec-hook)
+   #+END_SRC
+   
+   #+BEGIN_SRC emacs-lisp
+     (eval-after-load "term"
+       '(define-key term-raw-map (kbd "C-y") 'term-paste))
+   #+END_SRC
+
+
