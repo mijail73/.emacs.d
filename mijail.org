@@ -171,6 +171,28 @@
       (helm-mode 1)
     #+END_SRC
 
+*** Term
+    [[http://oremacs.com/2015/01/01/three-ansi-term-tips/][Term]]
+   - Close buffer of Ansi term when u press exit in the terminal.
+   #+BEGIN_SRC emacs-lisp
+     (defun oleh-term-exec-hook ()
+       (let* ((buff (current-buffer))
+              (proc (get-buffer-process buff)))
+         (set-process-sentinel
+          proc
+          `(lambda (process event)
+             (if (string= event "finished\n")
+                 (kill-buffer ,buff))))))
+
+     (add-hook 'term-exec-hook 'oleh-term-exec-hook)
+   #+END_SRC
+
+   - Paste with =C-c C-y= in ansi term.
+   #+BEGIN_SRC emacs-lisp
+     (eval-after-load "term"
+       '(define-key term-raw-map (kbd "C-c C-y") 'term-paste))
+   #+END_SRC
+
 ** Programming modes
 *** Java
     [[https://github.com/jdee-emacs/jdee-server][JDEE JAVA BACK END]]
@@ -266,26 +288,3 @@
      (global-set-key (kbd "C-x g") 'magit-status)
      (global-set-key (kbd "C-x M-g") 'magit-dispatch-popup)
    #+END_SRC
-
-   [[http://oremacs.com/2015/01/01/three-ansi-term-tips/][Term]]
-   - Close buffer of Ansi term when u press exit in the terminal.
-   #+BEGIN_SRC emacs-lisp
-     (defun oleh-term-exec-hook ()
-       (let* ((buff (current-buffer))
-              (proc (get-buffer-process buff)))
-         (set-process-sentinel
-          proc
-          `(lambda (process event)
-             (if (string= event "finished\n")
-                 (kill-buffer ,buff))))))
-
-     (add-hook 'term-exec-hook 'oleh-term-exec-hook)
-   #+END_SRC
-
-   - Paste with =C-y= in ansi term.
-   #+BEGIN_SRC emacs-lisp
-     (eval-after-load "ansi-term"
-       '(define-key term-raw-map (kbd "C-y") 'term-paste))
-   #+END_SRC
-
-
