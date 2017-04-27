@@ -268,10 +268,8 @@
    #+END_SRC
 
    [[http://oremacs.com/2015/01/01/three-ansi-term-tips/][Term]]
-   #+BEGIN_SRC emacs-lisp
-     (setq explicit-shell-file-name "/usr/bin/zsh")
-   #+END_SRC
-
+   ##### H5
+   - Close buffer os Ansi term when is closed.
    #+BEGIN_SRC emacs-lisp
      (defun oleh-term-exec-hook ()
        (let* ((buff (current-buffer))
@@ -284,9 +282,10 @@
 
      (add-hook 'term-exec-hook 'oleh-term-exec-hook)
    #+END_SRC
-   
+   ##### H5
+   -Paste with `C-y` in ansi term.
    #+BEGIN_SRC emacs-lisp
-     (eval-after-load "term"
+     (eval-after-load "ansi-term"
        '(define-key term-raw-map (kbd "C-y") 'term-paste))
    #+END_SRC
 
