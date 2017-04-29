@@ -46,6 +46,8 @@
                              racket-mode
                              prolog
                              helm-spotify-plus
+                             markdown-mode+
+                             gh-md
                              ))
    #+END_SRC
 
@@ -251,6 +253,7 @@
      (require 'flycheck)
      (add-hook 'after-init-hook #'global-flycheck-mode)
    #+END_SRC
+   
 ** Tools
    PDF Tools is, among other things, a replacement of DocView for PDF files.
    #+BEGIN_SRC emacs-lisp
