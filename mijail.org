@@ -126,6 +126,7 @@
    Each successive level is highlighted in a different color.
    #+BEGIN_SRC emacs-lisp
      (require 'rainbow-delimiters)
+     (add-hook 'jdee-mode-hook 'rainbow-delimiters-mode)
      (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
    #+END_SRC
 
