@@ -48,6 +48,7 @@
                              helm-spotify-plus
                              markdown-mode+
                              gh-md
+                             php-mode
                              ))
    #+END_SRC
 
