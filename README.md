@@ -1,6 +1,11 @@
 # .emacs.d
+If you want this configuration you need to make the following:
+1) Make sure you have [emacs 25 installed.](http://ubuntuhandbook.org/index.php/2016/09/install-gnu-emacs-25-1-in-ubuntu-16-04/)
+2) Download this repo unzip the file in home/"YourName"/ then rename the folder to ".emacs.d" (without the master).
+3) Optional: change names of files to your name ande make the rigth corrections due this change in the files.
+4) Open emacs and enjoy.
 
-This is my basic and comfy emacs configurations, suitable for beginners. 
+This is my basic and comfy emacs configuration, suitable for beginners. 
 This one helped me with the subject Data Structures, and I am looking forward
 to practice python, haskell and web developing with this config. 
 
