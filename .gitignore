@@ -11,3 +11,7 @@ mijail.el
 /snippets
 *~
 /url
+.emacs.desktop
+.emacs.desktop.lock
+network-security.data
+recentf
