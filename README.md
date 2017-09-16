@@ -4,7 +4,7 @@ If you want this configuration you need to make the following:
 2) Clone this repo in home/"YourName"/.
   `$ git clone https://github.com/mijail73/.emacs.d.git`
 3) Install [JDEE server](https://github.com/jdee-emacs/jdee-server) check mijail.org file; Java section.
-3) Optional: change names of files to your name ande make the rigth corrections due this change in the files.
+3) Optional: change names of files to your name and make the rigth corrections in the files, due to this change.
 4) Open emacs and enjoy.
 
 This is my basic and comfy emacs configuration, suitable for beginners. 
