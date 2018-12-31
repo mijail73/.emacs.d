@@ -305,13 +305,13 @@
    
    Add org-mode to AC
    #+BEGIN_SRC emacs-lisp
-   ;  (add-to-list 'ac-modes 'org-mode)
+     (add-to-list 'ac-modes 'org-mode)
    #+END_SRC   
 
    Autopair
    #+BEGIN_SRC emacs-lisp
-;   (require 'autopair)
-;   (autopair-global-mode t)
+   (require 'autopair)
+   (autopair-global-mode t)
    #+END_SRC 
 
    Yasnippet
