@@ -18,38 +18,40 @@
    Package Archives
    #+BEGIN_SRC emacs-lisp
      (setq package-archives '(("melpa" . "http://melpa.milkbox.net/packages/")
-                              ("org" . "http://orgmode.org/elpa/")
-                              ("gnu" . "http://elpa.gnu.org/packages/")
-                              ("marmalade" . "http://marmalade-repo.org/packages/")))
+			      ("org" . "http://orgmode.org/elpa/")
+			      ("gnu" . "http://elpa.gnu.org/packages/")
+			      ("marmalade" . "http://marmalade-repo.org/packages/")))
    #+END_SRC
 
    Packages to install
    #+BEGIN_SRC emacs-lisp
-     (setq my-package-list '(rainbow-delimiters
-                             flymake
-                             auto-complete
-                             autopair
-                             yasnippet
-                             flycheck
-                             python-mode
-                             jedi
-                             flymake-python-pyflakes
-                             elpy
-                             smart-mode-line
-                             dracula-theme
-                             column-enforce-mode
-                             helm
-                             jdee
-                             pdf-tools
-                             haskell-mode
-                             magit
-                             racket-mode
-                             prolog
-                             helm-spotify-plus
-                             markdown-mode+
-                             gh-md
-                             php-mode
-                             ))
+   (setq my-package-list '(rainbow-delimiters
+			   flymake
+			   auto-complete
+			   autopair
+			   yasnippet
+			   flycheck
+			   python-mode
+			   jedi
+			   flymake-python-pyflakes
+			   elpy
+			   smart-mode-line
+			   dracula-theme
+			   column-enforce-mode
+			   helm
+			   jdee
+			   pdf-tools
+			   haskell-mode
+			   magit
+			   racket-mode
+			   prolog
+			   helm-spotify-plus
+			   markdown-mode+
+			   gh-md
+			   disable-mouse
+			   org
+			   org-bullets
+			   ))
    #+END_SRC
 
 
@@ -67,93 +69,163 @@
    #+END_SRC
 ** Look and feel
 *** UI
-   UI - Emacs looks cool
-   Restore previous session(windows and buffers)
-   #+BEGIN_SRC emacs-lisp
+    UI - Emacs looks cool
+    Restore previous session(windows and buffers)
+    #+BEGIN_SRC emacs-lisp
      (desktop-save-mode 1)
-   #+END_SRC
+    #+END_SRC
 
-   Full screen without bars and menu.
-   #+BEGIN_SRC emacs-lisp
+    Full screen without bars and menu.
+    #+BEGIN_SRC emacs-lisp
      (tool-bar-mode -1)
      (menu-bar-mode -1)
      (scroll-bar-mode -1)
      (defun fullscreen ()
        (interactive)
        (x-send-client-message nil 0 nil "_NET_WM_STATE" 32
-                              '(2 "_NET_WM_STATE_FULLSCREEN" 0)))
+			      '(2 "_NET_WM_STATE_FULLSCREEN" 0)))
      (fullscreen)
-   #+END_SRC
+    #+END_SRC
 
-   Show time
-   #+BEGIN_SRC emacs-lisp
+    Disable Mouse
+    #+BEGIN_SRC emacs-lisp
+     (global-disable-mouse-mode)
+    #+END_SRC
+     
+    Show time
+    #+BEGIN_SRC emacs-lisp
      (display-time-mode)
-   #+END_SRC
+    #+END_SRC
 
-   SML
-   #+BEGIN_SRC emacs-lisp
+    SML
+    #+BEGIN_SRC emacs-lisp
      (setq sml/no-confirm-load-theme t)
      (setq sml/theme 'dark)
      (sml/setup)
-   #+END_SRC
+    #+END_SRC
 
-   Navigation(windmove); =shift= + arrows to change window
-   #+BEGIN_SRC emacs-lisp
-     (windmove-default-keybindings)
-   #+END_SRC
+    use C-x for cut
+    C-c for copy
+    C-v for paste
+    #+BEGIN_SRC emacs-lisp
+   (cua-mode 1)
+    #+END_SRC
 
-   Theme Dracula
-   #+BEGIN_SRC emacs-lisp
+    Stop using the arrow keys
+    #+BEGIN_SRC emacs-lisp
+     (global-unset-key [left])
+     (global-unset-key [up])
+     (global-unset-key [right])
+     (global-unset-key [down])
+     (global-unset-key [home])
+     (global-unset-key [end])
+     (global-unset-key [prior])
+     (global-unset-key [next])
+    #+END_SRC
+
+    Navigation(windmove) change window
+    #+BEGIN_SRC emacs-lisp
+     (global-set-key (kbd "C-c b")  'windmove-left)
+     (global-set-key (kbd "C-c f") 'windmove-right)
+     (global-set-key (kbd "C-c p")    'windmove-up)
+     (global-set-key (kbd "C-c n")  'windmove-down)
+    #+END_SRC
+      
+    Select the previous buffer in the buffer list (previous-buffer). 
+    #+BEGIN_SRC emacs-lisp
+     (global-set-key (kbd "C-x b") 'previous-buffer)
+    #+END_SRC
+
+    Select the next buffer in the buffer list (next-buffer). 
+    #+BEGIN_SRC emacs-lisp
+     (global-set-key (kbd "C-x f") 'next-buffer)
+    #+END_SRC
+
+    Theme Dracula
+    #+BEGIN_SRC emacs-lisp
      (add-to-list 'custom-theme-load-path "~/.emacs.d/elpa/dracula-theme-20160826.627")
      (load-theme 'dracula t)
-   #+END_SRC
+    #+END_SRC
 
-   Show column number
-   #+BEGIN_SRC emacs-lisp
+    Show column number
+    #+BEGIN_SRC emacs-lisp
      (setq column-number-mode t)
-   #+END_SRC
+    #+END_SRC
 
-   Keep the syntax highlighting in the current line.
-   #+BEGIN_SRC emacs-lisp
+    Keep the syntax highlighting in the current line.
+    #+BEGIN_SRC emacs-lisp
      (set-face-foreground 'highlight nil)
-   #+END_SRC
-
-   Highlight current line
-   #+BEGIN_SRC emacs-lisp
+    #+END_SRC
+    
+    Highlight current line
+    #+BEGIN_SRC emacs-lisp
      (global-hl-line-mode 1)
      (set-face-background 'hl-line "#383838")
-   #+END_SRC
+    #+END_SRC
 
-   Each successive level is highlighted in a different color.
-   #+BEGIN_SRC emacs-lisp
+    Each successive level is highlighted in a different color.
+    #+BEGIN_SRC emacs-lisp
      (require 'rainbow-delimiters)
      (add-hook 'jdee-mode-hook 'rainbow-delimiters-mode)
      (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
-   #+END_SRC
+    #+END_SRC
 
-   Allow to see matching pairs of parentheses and other characters.
-   #+BEGIN_SRC emacs-lisp
+    Allow to see matching pairs of parentheses and other characters.
+    #+BEGIN_SRC emacs-lisp
      (show-paren-mode 1)
-   #+END_SRC
+    #+END_SRC
 
-   Highlight text that extends beyond a certain column.
-   #+BEGIN_SRC emacs-lisp
+    Highlight text that extends beyond a certain column.
+    #+BEGIN_SRC emacs-lisp
      (require 'column-enforce-mode)
      (global-column-enforce-mode t)
-   #+END_SRC
+    #+END_SRC
 
-   Make windmove work in org-mode
-   #+BEGIN_SRC emacs-lisp
+    Make windmove work in org-mode
+    #+BEGIN_SRC emacs-lisp
      (add-hook 'org-shiftup-final-hook 'windmove-up)
      (add-hook 'org-shiftleft-final-hook 'windmove-left)
      (add-hook 'org-shiftdown-final-hook 'windmove-down)
      (add-hook 'org-shiftright-final-hook 'windmove-right)
-   #+END_SRC
+    #+END_SRC
 
-   Change "yes or no" to "y or n"
-   #+BEGIN_SRC emacs-lisp
+    Change "yes or no" to "y or n"
+    #+BEGIN_SRC emacs-lisp
      (fset 'yes-or-no-p 'y-or-n-p)
-   #+END_SRC
+    #+END_SRC
+
+    Customize the "delimiter lines" of the code blocks
+    /This code must be before requiring org./
+    #+BEGIN_SRC emacs-lisp
+    (defface org-block-begin-line
+      '((t (:underline "#A7A6AA" :foreground "#008ED1" :background "#EAEAFF")))
+      "Face used for the line delimiting the begin of source blocks.")
+
+    (defface org-block-background
+      '((t (:background "#FFFFEA")))
+      "Face used for the source block background.")
+
+    (defface org-block-end-line
+      '((t (:overline "#A7A6AA" :foreground "#008ED1" :background "#EAEAFF")))
+      "Face used for the line delimiting the end of source blocks.")
+    #+END_SRC
+
+    Work with SRC blocks
+    #+BEGIN_SRC emacs-lisp
+      (setq org-src-fontify-natively t
+	  org-src-tab-acts-natively t
+	  org-confirm-babel-evaluate nil
+	  org-edit-src-content-indentation 0)
+    #+END_SRC
+
+    Dark background org blocks
+    #+BEGIN_SRC emacs-lisp
+    (require 'color)
+    (set-face-attribute 'org-block nil :background
+			(color-darken-name
+			 (face-attribute 'default :background) 3))
+    #+END_SRC
+    
 *** Helm
     Helm configuration
     #+BEGIN_SRC emacs-lisp
@@ -177,8 +249,8 @@
 
 *** Term
     [[http://oremacs.com/2015/01/01/three-ansi-term-tips/][Term]]
-   - Close buffer of Ansi term when u press exit in the terminal.
-   #+BEGIN_SRC emacs-lisp
+    - Close buffer of Ansi term when u press exit in the terminal.
+    #+BEGIN_SRC emacs-lisp
      (defun oleh-term-exec-hook ()
        (let* ((buff (current-buffer))
               (proc (get-buffer-process buff)))
@@ -189,13 +261,13 @@
                  (kill-buffer ,buff))))))
 
      (add-hook 'term-exec-hook 'oleh-term-exec-hook)
-   #+END_SRC
+    #+END_SRC
 
-   - Paste with =C-c C-y= in ansi term.
-   #+BEGIN_SRC emacs-lisp
+    - Paste with =C-c C-y= in ansi term.
+    #+BEGIN_SRC emacs-lisp
      (eval-after-load "term"
        '(define-key term-raw-map (kbd "C-c C-y") 'term-paste))
-   #+END_SRC
+    #+END_SRC
 
 ** Programming modes
 *** Java
@@ -233,15 +305,15 @@
    
    Add org-mode to AC
    #+BEGIN_SRC emacs-lisp
-     (add-to-list 'ac-modes 'org-mode)
+   ;  (add-to-list 'ac-modes 'org-mode)
    #+END_SRC   
-   
+
    Autopair
    #+BEGIN_SRC emacs-lisp
-     (require 'autopair)
-     (autopair-global-mode t)
+;   (require 'autopair)
+;   (autopair-global-mode t)
    #+END_SRC 
-   
+
    Yasnippet
    #+BEGIN_SRC emacs-lisp
      (require 'yasnippet)
@@ -252,8 +324,8 @@
    
    Flycheck globally
    #+BEGIN_SRC emacs-lisp
-     (require 'flycheck)
-     (add-hook 'after-init-hook #'global-flycheck-mode)
+   (require 'flycheck)
+   (add-hook 'after-init-hook #'global-flycheck-mode)
    #+END_SRC
    
 ** Tools
@@ -262,6 +334,12 @@
      (pdf-tools-install)
    #+END_SRC
    
+   Org-bullets
+   #+BEGIN_SRC emacs-lisp
+     (require 'org-bullets)
+     (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+   #+END_SRC
+
    Org-mode
    #+BEGIN_SRC emacs-lisp
      (require 'org)
@@ -272,12 +350,6 @@
      (setq org-confirm-babel-evaluate nil)
    #+END_SRC
 
-   Org-bullets
-   #+BEGIN_SRC emancs-lisp
-     (require 'org-bullets)
-     (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
-   #+END_SRC
-
    Active Babel languages
    #+BEGIN_SRC emacs-lisp
      (org-babel-do-load-languages
@@ -285,6 +357,7 @@
       '((python . t)
         (java . t)
         (haskell . t)
+        (emacs-lisp . t)
         ))
    #+END_SRC
 
@@ -293,3 +366,6 @@
      (global-set-key (kbd "C-x g") 'magit-status)
      (global-set-key (kbd "C-x M-g") 'magit-dispatch-popup)
    #+END_SRC
+   
+   
+   
