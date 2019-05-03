@@ -51,22 +51,34 @@
 			   disable-mouse
 			   org
 			   org-bullets
+			   htmlize
+			   importmagic
+			   yasnippet-snippets
+			   org-mind-map
+			   use-package
 			   ))
    #+END_SRC
+   
+   #+begin_src emacs-lisp
+     (package-initialize)
+     (add-to-list 'package-archives
+		  '("melpa" . "http://melpa.org/packages/"))
+     (add-to-list 'package-archives
+		  '("org" . "http://orgmode.org/elpa/"))
 
-
-   Fetch the list of packages available
-   #+BEGIN_SRC emacs-lisp
-     (unless package-archive-contents
-       (package-refresh-contents))
-   #+END_SRC
-
-   Install packages
-   #+BEGIN_SRC emacs-lisp
-     (dolist (i-package my-package-list)
-       (unless (package-installed-p i-package)
-         (package-install i-package)))
-   #+END_SRC
+     ;; install any packages in my-package-list, if they are not installed already
+     (let ((refreshed nil))
+       (when (not package-archive-contents)
+	 (package-refresh-contents)
+	 (setq refreshed t))
+       (dolist (pkg my-package-list)
+	 (when (and (not (package-installed-p pkg))
+		    (assoc pkg package-archive-contents))
+	   (unless refreshed
+	     (package-refresh-contents)
+	     (setq refreshed t))
+	   (package-install pkg))))
+   #+end_src
 ** Look and feel
 *** UI
     UI - Emacs looks cool
@@ -74,6 +86,11 @@
     #+BEGIN_SRC emacs-lisp
      (desktop-save-mode 1)
     #+END_SRC
+
+    Visual line mode in org mode
+    #+begin_src emacs-lisp
+    (add-hook 'org-mode-hook '(lambda () (visual-line-mode 1)))
+    #+end_src
 
     Full screen without bars and menu.
     #+BEGIN_SRC emacs-lisp
@@ -108,7 +125,7 @@
     C-c for copy
     C-v for paste
     #+BEGIN_SRC emacs-lisp
-   (cua-mode 1)
+    ;(cua-mode 1)
     #+END_SRC
 
     Stop using the arrow keys
@@ -143,8 +160,8 @@
 
     Theme Dracula
     #+BEGIN_SRC emacs-lisp
-     (add-to-list 'custom-theme-load-path "~/.emacs.d/elpa/dracula-theme-20160826.627")
-     (load-theme 'dracula t)
+    (add-to-list 'custom-theme-load-path "~/.emacs.d/elpa/dracula-theme-20160826.627")
+    (load-theme 'dracula t)
     #+END_SRC
 
     Show column number
@@ -209,6 +226,11 @@
 			(color-darken-name
 			 (face-attribute 'default :background) 3))
     #+END_SRC
+
+    Set Kill Buffer to Kill Buffer and Window
+    #+begin_src emacs-lisp
+    (global-set-key (kbd "C-x k") 'kill-buffer-and-window)
+    #+end_src
     
 *** Helm
     Helm configuration
@@ -272,7 +294,17 @@
       (add-hook 'python-mode-hook 'flymake-python-pyflakes-load)
     #+END_SRC
     
-    Elpy mode
+    Elpy mode and JEDI
+    For JEDI we need install pip and virtualenv
+    #+begin_src shell
+    sudo apt update
+    #Then
+    sudo apt install python-pip
+    #Then
+    pip --version
+    #Then we Install visrtualenv
+    pip install virtualenv
+    #+end_src
     #+BEGIN_SRC emacs-lisp
       (elpy-enable)
       (setenv "PYTHONPATH" "/usr/bin/python")
@@ -329,6 +361,29 @@
      (require 'org)
    #+END_SRC
 
+   Org Color in Backgroung of blocks HTML
+#   #+begin_src emacs-lisp
+   (defun my-org-inline-css-hook (exporter)
+     "Insert custom inline css"
+     (when (eq exporter 'html)
+       (let ((my-pre-bg (face-background 'default)))
+	 (setq org-html-head-include-default-style nil)
+	 (setq org-html-head
+	       (format "<style type=\"text/css\">\n pre.src { background-color: %s;}</style>\n" my-pre-bg)))))
+
+   (add-hook 'org-export-before-processing-hook 'my-org-inline-css-hook)
+   (defadvice htmlize-buffer-1 (around ome-htmlize-buffer-1 disable)
+     (rainbow-delimiters-mode -1)
+     ad-do-it
+     (rainbow-delimiters-mode t))
+
+   (defun ome-htmlize-setup ()
+     (if (el-get-read-package-status 'rainbow-delimiters)
+	 (progn
+	   (ad-enable-advice 'htmlize-buffer-1 'around 'ome-htmlize-buffer-1)
+	   (ad-activate 'htmlize-buffer-1))))
+   #+end_src
+
    Evaluate src code without confirmation.
    #+BEGIN_SRC emacs-lisp
      (setq org-confirm-babel-evaluate nil)
@@ -336,13 +391,18 @@
 
    Active Babel languages
    #+BEGIN_SRC emacs-lisp
-     (org-babel-do-load-languages
-      'org-babel-load-languages
-      '((python . t)
-        (java . t)
-        (haskell . t)
-        (emacs-lisp . t)
-        ))
+   (org-babel-do-load-languages
+    'org-babel-load-languages
+    '((python . t)
+      (java . t)
+      (haskell . t)
+      (emacs-lisp . t)
+      (js . t)
+      (R . t)
+      (ruby . t)
+      (C . t)
+      (shell . t)
+      ))
    #+END_SRC
 
    Magit
@@ -350,5 +410,55 @@
      (global-set-key (kbd "C-x g") 'magit-status)
      (global-set-key (kbd "C-x M-g") 'magit-dispatch-popup)
    #+END_SRC
-   
-   
+
+   Org-mind-map
+   #+begin_src emacs-lisp
+					   ;(load "/home/mijail/.emacs.d/elpa/org-mind-map-20180826.2340/org-mind-map.el")
+   ;; This is an Emacs package that creates graphviz directed graphs from
+   ;; the headings of an org file
+   (use-package org-mind-map
+     :init
+     (require 'ox-org)
+     :ensure t
+     ;; Uncomment the below if 'ensure-system-packages` is installed
+     ;;:ensure-system-package (gvgen . graphviz)
+     :config
+     (setq org-mind-map-engine "dot")       ; Default. Directed Graph
+     ;; (setq org-mind-map-engine "neato")  ; Undirected Spring Graph
+     ;; (setq org-mind-map-engine "twopi")  ; Radial Layout
+     ;; (setq org-mind-map-engine "fdp")    ; Undirected Spring Force-Directed
+     ;; (setq org-mind-map-engine "sfdp")   ; Multiscale version of fdp for the layout of large graphs
+     ;; (setq org-mind-map-engine "twopi")  ; Radial layouts
+     ;; (setq org-mind-map-engine "circo")  ; Circular Layout
+     )
+   #+end_src
+
+   Org-Agenda
+   #+begin_src emacs-lisp
+   (global-set-key "\C-cl" 'org-store-link)
+   (global-set-key "\C-ca" 'org-agenda)
+   (global-set-key (kbd "C-c c") 'org-capture)
+   #+end_src
+
+   The following customization sets a default target file for notes.
+   #+begin_src emacs-lisp
+   (setq org-default-notes-file "~/Dropbox/org/notes.org")
+   #+end_src
+
+   Agenda files
+   #+begin_src emacs-lisp
+   (setq org-agenda-files '("~/Dropbox/org/myLife.org"))
+   #+end_src
+
+   LOGS go into a DRAWER (name of drawer LOGBOOK)
+   #+begin_src emacs-lisp
+   (setq org-log-into-drawer t)
+   #+end_src
+
+   HABITS
+   #+begin_src emacs-lisp
+   (setq org-modules '(org-habit))
+   (eval-after-load 'org
+    '(org-load-modules-maybe t))
+   #+end_src
+
