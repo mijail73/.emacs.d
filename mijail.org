@@ -43,9 +43,6 @@
 			   pdf-tools
 			   haskell-mode
 			   magit
-			   racket-mode
-			   prolog
-			   helm-spotify-plus
 			   markdown-mode+
 			   gh-md
 			   disable-mouse
@@ -56,6 +53,8 @@
 			   yasnippet-snippets
 			   org-mind-map
 			   use-package
+			   bison-mode
+			   ac-html
 			   ))
    #+END_SRC
    
@@ -86,11 +85,6 @@
     #+BEGIN_SRC emacs-lisp
      (desktop-save-mode 1)
     #+END_SRC
-
-    Visual line mode in org mode
-    #+begin_src emacs-lisp
-    (add-hook 'org-mode-hook '(lambda () (visual-line-mode 1)))
-    #+end_src
 
     Full screen without bars and menu.
     #+BEGIN_SRC emacs-lisp
@@ -142,10 +136,10 @@
 
     Navigation(windmove) change window
     #+BEGIN_SRC emacs-lisp
-     (global-set-key (kbd "C-c b")  'windmove-left)
-     (global-set-key (kbd "C-c f") 'windmove-right)
-     (global-set-key (kbd "C-c p")    'windmove-up)
-     (global-set-key (kbd "C-c n")  'windmove-down)
+    (global-set-key (kbd "C-c b")  'windmove-left)
+    (global-set-key (kbd "C-c f") 'windmove-right)
+    (global-set-key (kbd "C-c p")    'windmove-up)
+    (global-set-key (kbd "C-c n")  'windmove-down)
     #+END_SRC
       
     Select the previous buffer in the buffer list (previous-buffer). 
@@ -198,38 +192,20 @@
      (global-column-enforce-mode t)
     #+END_SRC
 
-    Make windmove work in org-mode
-    #+BEGIN_SRC emacs-lisp
-     (add-hook 'org-shiftup-final-hook 'windmove-up)
-     (add-hook 'org-shiftleft-final-hook 'windmove-left)
-     (add-hook 'org-shiftdown-final-hook 'windmove-down)
-     (add-hook 'org-shiftright-final-hook 'windmove-right)
-    #+END_SRC
-
     Change "yes or no" to "y or n"
     #+BEGIN_SRC emacs-lisp
      (fset 'yes-or-no-p 'y-or-n-p)
     #+END_SRC
 
-    Work with SRC blocks
-    #+BEGIN_SRC emacs-lisp
-      (setq org-src-fontify-natively t
-	  org-src-tab-acts-natively t
-	  org-confirm-babel-evaluate nil
-	  org-edit-src-content-indentation 0)
-    #+END_SRC
-
-    Dark background org blocks
-    #+BEGIN_SRC emacs-lisp
-    (require 'color)
-    (set-face-attribute 'org-block nil :background
-			(color-darken-name
-			 (face-attribute 'default :background) 3))
-    #+END_SRC
-
     Set Kill Buffer to Kill Buffer and Window
     #+begin_src emacs-lisp
     (global-set-key (kbd "C-x k") 'kill-buffer-and-window)
+    #+end_src
+
+    Set Chrome as a default browser
+    #+begin_src emacs-lisp
+    (setq browse-url-browser-function 'browse-url-generic
+	  browse-url-generic-program "google-chrome")
     #+end_src
     
 *** Helm
@@ -286,7 +262,6 @@
     #+BEGIN_SRC emacs-lisp
                                               ;(push 'jdee-mode ac-modes)
     #+END_SRC   
-*** Haskell
 *** Python
     Flymake
     #+BEGIN_SRC emacs-lisp
@@ -306,23 +281,30 @@
     pip install virtualenv
     #+end_src
     #+BEGIN_SRC emacs-lisp
-      (elpy-enable)
-      (setenv "PYTHONPATH" "/usr/bin/python")
-      (add-hook 'python-mode-hook 'jedi:setup)
-      (setq jedi:complete-on-dot t)
+    (elpy-enable)
+    (setenv "PYTHONPATH" "/usr/bin/python")
+    (add-hook 'python-mode-hook 'jedi:setup)
+    (setq jedi:complete-on-dot t)
+    (setq elpy-rpc-python-command "python3")
+    (setq python-shell-interpreter "python3")
+    (custom-set-variables
+     '(flycheck-python-flake8-executable "python3")
+     '(flycheck-python-pycompile-executable "python3")
+     '(flycheck-python-pylint-executable "python3"))
     #+END_SRC
+*** Bison
+    Setup files ending in “.flex” or ".y" to open in bison-mode.
+    #+begin_src emacs-lisp
+    (add-to-list 'auto-mode-alist '("\\.flex\\'" . bison-mode))
+    (add-to-list 'auto-mode-alist '("\\.y\\'" . bison-mode))
+    #+end_src
 ** Editing
    Auto complete
    #+BEGIN_SRC emacs-lisp
-     (require 'auto-complete)
-     (require 'auto-complete-config)
-     (ac-config-default)
+   (require 'auto-complete)
+   (require 'auto-complete-config)
+   (ac-config-default)
    #+END_SRC
-   
-   Add org-mode to AC
-   #+BEGIN_SRC emacs-lisp
-     (add-to-list 'ac-modes 'org-mode)
-   #+END_SRC   
 
    Autopair
    #+BEGIN_SRC emacs-lisp
@@ -332,10 +314,10 @@
 
    Yasnippet
    #+BEGIN_SRC emacs-lisp
-     (require 'yasnippet)
-     (yas-global-mode 1)
-     (add-hook 'term-mode-hook (lambda()
-                                 (yas-minor-mode -1)))
+   (require 'yasnippet)
+   (yas-global-mode 1)
+   (add-hook 'term-mode-hook (lambda()
+			       (yas-minor-mode -1)))
    #+END_SRC
    
    Flycheck globally
@@ -350,17 +332,6 @@
      (pdf-tools-install)
    #+END_SRC
    
-   Org-bullets
-   #+BEGIN_SRC emacs-lisp
-     (require 'org-bullets)
-     (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
-   #+END_SRC
-
-   Org-mode
-   #+BEGIN_SRC emacs-lisp
-     (require 'org)
-   #+END_SRC
-
    Org Color in Backgroung of blocks HTML
 #   #+begin_src emacs-lisp
    (defun my-org-inline-css-hook (exporter)
@@ -384,81 +355,197 @@
 	   (ad-activate 'htmlize-buffer-1))))
    #+end_src
 
-   Evaluate src code without confirmation.
-   #+BEGIN_SRC emacs-lisp
-     (setq org-confirm-babel-evaluate nil)
-   #+END_SRC
-
-   Active Babel languages
-   #+BEGIN_SRC emacs-lisp
-   (org-babel-do-load-languages
-    'org-babel-load-languages
-    '((python . t)
-      (java . t)
-      (haskell . t)
-      (emacs-lisp . t)
-      (js . t)
-      (R . t)
-      (ruby . t)
-      (C . t)
-      (shell . t)
-      ))
-   #+END_SRC
-
    Magit
    #+BEGIN_SRC emacs-lisp
-     (global-set-key (kbd "C-x g") 'magit-status)
-     (global-set-key (kbd "C-x M-g") 'magit-dispatch-popup)
+   (global-set-key (kbd "C-x g") 'magit-status)
+   (global-set-key (kbd "C-x M-g") 'magit-dispatch-popup)
    #+END_SRC
 
-   Org-mind-map
-   #+begin_src emacs-lisp
-					   ;(load "/home/mijail/.emacs.d/elpa/org-mind-map-20180826.2340/org-mind-map.el")
-   ;; This is an Emacs package that creates graphviz directed graphs from
-   ;; the headings of an org file
-   (use-package org-mind-map
-     :init
-     (require 'ox-org)
-     :ensure t
-     ;; Uncomment the below if 'ensure-system-packages` is installed
-     ;;:ensure-system-package (gvgen . graphviz)
-     :config
-     (setq org-mind-map-engine "dot")       ; Default. Directed Graph
-     ;; (setq org-mind-map-engine "neato")  ; Undirected Spring Graph
-     ;; (setq org-mind-map-engine "twopi")  ; Radial Layout
-     ;; (setq org-mind-map-engine "fdp")    ; Undirected Spring Force-Directed
-     ;; (setq org-mind-map-engine "sfdp")   ; Multiscale version of fdp for the layout of large graphs
-     ;; (setq org-mind-map-engine "twopi")  ; Radial layouts
-     ;; (setq org-mind-map-engine "circo")  ; Circular Layout
-     )
-   #+end_src
+** ORG-MODE
+*** ORG
+    Visual line mode in org mode
+    #+begin_src emacs-lisp
+    (add-hook 'org-mode-hook '(lambda () (visual-line-mode 1)))
+    #+end_src
 
-   Org-Agenda
-   #+begin_src emacs-lisp
-   (global-set-key "\C-cl" 'org-store-link)
-   (global-set-key "\C-ca" 'org-agenda)
-   (global-set-key (kbd "C-c c") 'org-capture)
-   #+end_src
+     Make windmove work in org-mode
+     #+BEGIN_SRC emacs-lisp
+     (add-hook 'org-shiftup-final-hook 'windmove-up)
+     (add-hook 'org-shiftleft-final-hook 'windmove-left)
+     (add-hook 'org-shiftdown-final-hook 'windmove-down)
+     (add-hook 'org-shiftright-final-hook 'windmove-right)
+     #+END_SRC
 
-   The following customization sets a default target file for notes.
-   #+begin_src emacs-lisp
-   (setq org-default-notes-file "~/Dropbox/org/notes.org")
-   #+end_src
+     Work with SRC blocks
+     #+BEGIN_SRC emacs-lisp
+     (setq org-src-fontify-natively t
+	   org-src-tab-acts-natively t
+	   org-confirm-babel-evaluate nil
+	   org-edit-src-content-indentation 0)
+     #+END_SRC
 
-   Agenda files
-   #+begin_src emacs-lisp
-   (setq org-agenda-files '("~/Dropbox/org/myLife.org"))
-   #+end_src
+     Dark background org blocks
+     #+BEGIN_SRC emacs-lisp
+     (require 'color)
+     (set-face-attribute 'org-block nil :background
+			 (color-darken-name
+			  (face-attribute 'default :background) 3))
+     #+END_SRC
 
-   LOGS go into a DRAWER (name of drawer LOGBOOK)
-   #+begin_src emacs-lisp
-   (setq org-log-into-drawer t)
-   #+end_src
+    Add org-mode to AC
+    #+BEGIN_SRC emacs-lisp
+    (add-to-list 'ac-modes 'org-mode)
+    #+END_SRC   
 
-   HABITS
-   #+begin_src emacs-lisp
-   (setq org-modules '(org-habit))
-   (eval-after-load 'org
-    '(org-load-modules-maybe t))
-   #+end_src
+    Org-bullets
+    #+BEGIN_SRC emacs-lisp
+    (require 'org-bullets)
+    (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+    #+END_SRC
 
+    Org-mode
+    #+BEGIN_SRC emacs-lisp
+    (require 'org)
+    #+END_SRC
+
+    Evaluate src code without confirmation.
+    #+BEGIN_SRC emacs-lisp
+      (setq org-confirm-babel-evaluate nil)
+    #+END_SRC
+
+    Active Babel languages
+    #+BEGIN_SRC emacs-lisp
+    (org-babel-do-load-languages
+     'org-babel-load-languages
+     '((python . t)
+       (java . t)
+       (haskell . t)
+       (emacs-lisp . t)
+       (js . t)
+       (R . t)
+       (ruby . t)
+       (C . t)
+       (shell . t)
+       ))
+    #+END_SRC
+    Org-mind-map
+    #+begin_src emacs-lisp
+					    ;(load "/home/mijail/.emacs.d/elpa/org-mind-map-20180826.2340/org-mind-map.el")
+    ;; This is an Emacs package that creates graphviz directed graphs from
+    ;; the headings of an org file
+    (use-package org-mind-map
+      :init
+      (require 'ox-org)
+      :ensure t
+      ;; Uncomment the below if 'ensure-system-packages` is installed
+      ;;:ensure-system-package (gvgen . graphviz)
+      :config
+      (setq org-mind-map-engine "dot")       ; Default. Directed Graph
+      ;; (setq org-mind-map-engine "neato")  ; Undirected Spring Graph
+      ;; (setq org-mind-map-engine "twopi")  ; Radial Layout
+      ;; (setq org-mind-map-engine "fdp")    ; Undirected Spring Force-Directed
+      ;; (setq org-mind-map-engine "sfdp")   ; Multiscale version of fdp for the layout of large graphs
+      ;; (setq org-mind-map-engine "twopi")  ; Radial layouts
+      ;; (setq org-mind-map-engine "circo")  ; Circular Layout
+      )
+    #+end_src
+
+    Org-Agenda
+    #+begin_src emacs-lisp
+    (global-set-key "\C-cl" 'org-store-link)
+    (global-set-key "\C-ca" 'org-agenda)
+    (global-set-key (kbd "C-c c") 'org-capture)
+    #+end_src
+
+    The following customization sets a default target file for notes.
+    #+begin_src emacs-lisp
+    (setq org-default-notes-file "~/Dropbox/org/notes.org")
+    #+end_src
+
+    Agenda files
+    #+begin_src emacs-lisp
+    (setq org-agenda-files '("~/Dropbox/org/mylife.org"))
+    #+end_src
+
+    #+RESULTS:
+    | ~/Dropbox/org/mylife.org |
+
+    LOGS go into a DRAWER (name of drawer LOGBOOK)
+    #+begin_src emacs-lisp
+    (setq org-log-into-drawer t)
+    #+end_src
+
+    HABITS
+    #+begin_src emacs-lisp
+    (setq org-modules '(org-habit))
+    (eval-after-load 'org
+     '(org-load-modules-maybe t))
+    #+end_src
+
+    Ordered tasks, tasks should be completed one after the other.
+    #+begin_src emacs-lisp
+    (setq org-enforce-todo-dependencies t)
+    (setq org-track-ordered-property-with-tag t)
+    (setq org-agenda-dim-blocked-tasks t)
+    (setq org-enforce-todo-checkbox-dependencies t)
+    #+end_src
+
+    Org refile targets to other files of agenda
+    #+begin_src emacs-lisp
+    (setq org-refile-allow-creating-parent-nodes '(confirm))
+    (setq org-refile-targets '((nil :maxlevel . 9)
+			       (org-agenda-files :maxlevel . 9)))
+    (setq org-outline-path-complete-in-steps nil)         ; Refile in a single go
+    (setq org-refile-use-outline-path t)                  ; Show full paths for refiling
+    #+end_src
+
+    #+RESULTS:
+    : t
+*** Capture Templates
+    #+begin_src emacs-lisp
+    (setq org-capture-templates
+	  '(
+	    ;; Templates for the READ keyword sequence
+	    ("r" "Read")
+	    ;; BOOK (b) Book template
+	    ("rb" "Book" entry
+	     (file+headline "~/Dropbox/org/mylife.org" "Books")
+	     "* SOMEDAY %^{Title}
+      - Recommended by %^{recommended by}
+      :PROPERTIES:
+      :AUTHOR: %^{Author}
+      :PAGES: %^{Pages}
+      :GENRE: %^{Genre}
+      :LINK: %^{Link%:url}
+      :END:
+      :LOGBOOK:
+      - Added: %U
+      :END:"
+	     :empty-lines 1)
+
+	    ;; Template for Todo
+	    ("t" "Todo" entry
+	     (file+headline "~/Dropbox/org/mylife.org" "Things to do")
+	     "* TODO %^{Todo}
+      %?
+      :LOGBOOK:
+      - Added: %U
+      :END:"
+	     :empty-lines 1)
+
+	    ;; Template fo Someday
+	    ("s" "Someday" entry
+	     (file+headline "~/Dropbox/org/mylife.org" "Someday")
+	     "* SOMEDAY %^{Someday}
+      %?
+      :LOGBOOK:
+      - Added: %U
+      :END:"
+	     :empty-lines 1)
+
+	    ))
+    #+end_src
+
+    #+RESULTS:
+    | r  | Read |       |                                                |                     |
+    | rb | Book | entry | (file+headline ~/Dropbox/org/mylife.org Books) | * SOMEDAY %^{Title} |
