@@ -55,6 +55,7 @@
 			   use-package
 			   bison-mode
 			   ac-html
+			   multi-web-mode ;https://github.com/fgallina/multi-web-mode
 			   ))
    #+END_SRC
    
@@ -100,8 +101,10 @@
 
     Disable Mouse
     #+BEGIN_SRC emacs-lisp
-     (global-disable-mouse-mode)
+    ;; (global-disable-mouse-mode)  
     #+END_SRC
+
+    #+RESULTS:
      
     Show time
     #+BEGIN_SRC emacs-lisp
@@ -136,11 +139,11 @@
 
     Navigation(windmove) change window
     #+BEGIN_SRC emacs-lisp
-    (global-set-key (kbd "C-c b")  'windmove-left)
-    (global-set-key (kbd "C-c f") 'windmove-right)
-    (global-set-key (kbd "C-c p")    'windmove-up)
-    (global-set-key (kbd "C-c n")  'windmove-down)
+    (windmove-default-keybindings) ;; Shift+direction
     #+END_SRC
+
+    #+RESULTS:
+    : windmove-down
       
     Select the previous buffer in the buffer list (previous-buffer). 
     #+BEGIN_SRC emacs-lisp
@@ -298,6 +301,21 @@
     (add-to-list 'auto-mode-alist '("\\.flex\\'" . bison-mode))
     (add-to-list 'auto-mode-alist '("\\.y\\'" . bison-mode))
     #+end_src
+*** web mode
+    #+begin_src emacs-lisp
+    (require 'multi-web-mode)
+    (setq mweb-default-major-mode 'html-mode)
+    (setq mweb-tags 
+      '((php-mode "<\\?php\\|<\\? \\|<\\?=" "\\?>")
+	(js-mode  "<script[^>]*>" "</script>")
+	(css-mode "<style[^>]*>" "</style>")))
+    (setq mweb-filename-extensions '("php" "htm" "html" "ctp" "phtml" "php4" "php5"))
+    (multi-web-global-mode 1)
+    #+end_src
+
+    #+RESULTS:
+    : t
+
 ** Editing
    Auto complete
    #+BEGIN_SRC emacs-lisp
